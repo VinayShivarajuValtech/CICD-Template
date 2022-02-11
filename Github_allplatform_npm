@@ -1,0 +1,65 @@
+# Example Snyk script for Github Actions Pipeline with Node.js project
+
+name: Snyk SCA, IaC and Container CLI monitor example
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Test and build
+    environment: snyk-npm
+    runs-on: ubuntu-latest
+
+strategy:
+  matrix:
+    node-version: [16.x]
+    # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+#Snyk Steps 
+steps:
+  - uses: actions/checkout@v2
+  - name: Use Node.js ${{ matrix.node-version }}
+    uses: actions/setup-node@v2
+    with:
+      node-version: ${{ matrix.node-version }}
+      cache: 'npm'
+
+#Snyk Installation
+  - name: Setup Snyk + snyk-to-html
+    run: |
+      npm install snyk -g
+      npm install snyk-to-html -g
+      snyk auth ${{secrets.SNYK_AUTH}}
+
+
+  - name: Snyk Open Source # Test a project for open source vulnerabilities and license issues.
+    run: |
+      snyk test
+# you can use snyk test --all-projects to auto-detect all projects in the working directory
+      snyk monitor
+# you can use snyk monitor --org=<ORG_ID> The <ORG_ID> influences where new projects are created after running the monitor command, some features availability, and private test limits.
+
+
+  - name: Snyk Container # Test container images for vulnerabilities.
+    run: |
+      docker build . -t yourimage:tag 
+  # Rename your image and build your image for testing 
+      snyk container test
+      snyk container monitor yourimage:tag --file=Dockerfile
+    
+  - name: Snyk IaC #Find security issues in Infrastructure as Code files.
+    run: |
+      snyk iac test || true
+  # Remove || true to fail if there are vulnerabilities
+
+  
+# Exit codes
+# Possible exit codes and their meaning:
+# 0: success, no vulnerabilities found
+# 1: action_needed, vulnerabilities found
+# 2: failure, try to re-run command
+# 3: failure, no supported projects
