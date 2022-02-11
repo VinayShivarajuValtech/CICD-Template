@@ -1,4 +1,4 @@
-# Example Snyk script for Github Actions Pipeline with Node.js project
+# Example Snyk script for Github Actions Pipeline with maven project
 
 name: Java CI with Maven
 
