@@ -55,7 +55,7 @@ jobs:
   - name: Snyk Container # Test container images for vulnerabilities.
     run: |
       docker build . -t yourimage:tag 
-  # Rename your image and build your image for testing 
+# Rename your image and build your image for testing 
       snyk container test
       snyk container monitor yourimage:tag --file=Dockerfile
       
@@ -63,14 +63,14 @@ jobs:
   - name: Snyk IaC #Find security issues in Infrastructure as Code files.
     run: |
       snyk iac test || true
-  # Remove || true to fail if there are vulnerabilities
+# Remove || true to fail if there are vulnerabilities
   
   
   
-  # - name: Snyk Code # Find security issues using static code analysis 
-  #   run: |
-  #     snyk code test || true
-  # Remove || true to fail if there are vulnerabilities
+#  - name: Snyk Code # Find security issues using static code analysis 
+#    run: |
+#      snyk code test || true
+# Remove || true to fail if there are vulnerabilities
 
   
 # Exit codes
