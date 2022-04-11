@@ -1,6 +1,6 @@
 # Example Snyk script for GitLab CI/CD Pipeline with Node.js project for merge request only - using Use only to add jobs
 
-dependency_scanning:
+snyk_dependency_scanning:
   image: node:latest
   stage: test
   script:
