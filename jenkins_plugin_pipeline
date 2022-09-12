@@ -4,7 +4,7 @@ pipeline {
   stages {
     stage('git clone') {
       steps {
-        git url: 'https://github.com/sebsnyk/juice-shop.git'
+        git url: 'https://github.com/jennysnyk/juice-shop.git'
         }
     }
     stage('Build') {
