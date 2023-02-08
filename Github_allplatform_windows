@@ -1,0 +1,30 @@
+name: Snyk SCA, Code, IaC and Container CLI monitor example
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Snyk Test and build
+    environment: #todefine
+    runs-on: #todefine
+
+steps:
+  - name: Setup Snyk # For information about the required commands for generating an HTML report see https://github.com/snyk/snyk-to-html
+    run: |
+      curl https://static.snyk.io/cli/latest/snyk-win.exe -o snyk
+      chmod +x ./snyk
+      mv ./snyk /usr/local/bin/
+  - name: Snyk auth 
+    run: |
+      snyk auth ${{secrets.SNYK_AUTH}}
+  - name: Snyk Open Source # For testing and failing please add snyk test before snyk monitor
+    run: |
+      snyk monitor 
+      snyk test # For a list of additional available flags/options see: https://docs.snyk.io/snyk-cli/commands
+  - name: Snyk Code # Remove || true to fail if there are vulnerabilities
+    run: |
+      snyk code test || true
